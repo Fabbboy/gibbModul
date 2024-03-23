@@ -104,9 +104,9 @@ CREATE TABLE tutoring(
   course_id INT NOT NULL,
   start_time TIME NOT NULL,
   end_time TIME NOT NULL,
-  room_id INT NOT NULL,
-  FOREIGN KEY (course_id) REFERENCES course(id),
-  FOREIGN KEY (room_id) REFERENCES room(id),
+  room_id INT,
+  FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE,
+  FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE SET NULL,
   CHECK (start_time < end_time)
 );
 
@@ -114,11 +114,11 @@ CREATE TABLE students_tutoring(
   id INT PRIMARY KEY AUTO_INCREMENT,
   student_id VARCHAR(20) NOT NULL,
   tutoring_id INT NOT NULL,
-  FOREIGN KEY (student_id) REFERENCES student(id),
-  FOREIGN KEY (tutoring_id) REFERENCES tutoring(id)
+  FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
+  FOREIGN KEY (tutoring_id) REFERENCES tutoring(id) ON DELETE CASCADE
 );
 
 ALTER TABLE absence
-ADD FOREIGN KEY (lesson_id) REFERENCES lesson(id);
+ADD FOREIGN KEY (lesson_id) REFERENCES lesson(id) ON DELETE SET NULL;
 ALTER TABLE lesson
 ADD FOREIGN KEY (course_id) REFERENCES course(id);
