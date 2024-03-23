@@ -35,7 +35,7 @@ CREATE TABLE student (
   contact_id INT NOT NULL,
   class_id INT NOT NULL,
   FOREIGN KEY (contact_id) REFERENCES contact(id) ON DELETE RESTRICT,
-  FOREIGN KEY (class_id) REFERENCES class(id) ON DELETE RESTRICT,
+  FOREIGN KEY (class_id) REFERENCES class(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE teacher (
@@ -48,14 +48,13 @@ CREATE TABLE teacher (
   FOREIGN KEY (class_id) REFERENCES class(id) ON DELETE RESTRICT
 );
 
-CREATE TABLE absence (
+CREATE TABLE course (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  date DATE NOT NULL,
+  author_id VARCHAR(20),
+  subject VARCHAR(50) NOT NULL,
+  number INT NOT NULL,
   hours INT NOT NULL,
-  confirmed TINYINT(1) NOT NULL DEFAULT 0,
-  lesson_id INT NOT NULL,
-  student_id VARCHAR(20),
-  FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE
+  FOREIGN KEY (author_id) REFERENCES teacher(id) ON DELETE SET NULL
 );
 
 CREATE TABLE lesson (
@@ -69,16 +68,19 @@ CREATE TABLE lesson (
   FOREIGN KEY (teacher_id) REFERENCES teacher(id) ON DELETE SET NULL,
   FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE SET NULL,
   FOREIGN KEY (class_id) REFERENCES class(id) ON DELETE CASCADE,
+  FOREIGN KEY (course_id) REFERENCES course(id) ON DELETE CASCADE,
   CHECK (start_time < end_time)
 );
 
-CREATE TABLE course (
+CREATE TABLE absence (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  author_id VARCHAR(20),
-  subject VARCHAR(50) NOT NULL,
-  number INT NOT NULL,
+  date DATE NOT NULL,
   hours INT NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES teacher(id) ON DELETE SET NULL
+  confirmed TINYINT(1) NOT NULL DEFAULT 0,
+  lesson_id INT NOT NULL,
+  student_id VARCHAR(20),
+  FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
+  FOREIGN KEY (lesson_id) REFERENCES lesson(id) ON DELETE CASCADE
 );
 
 CREATE TABLE schedule(
@@ -117,8 +119,3 @@ CREATE TABLE students_tutoring(
   FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE,
   FOREIGN KEY (tutoring_id) REFERENCES tutoring(id) ON DELETE CASCADE
 );
-
-ALTER TABLE absence
-ADD FOREIGN KEY (lesson_id) REFERENCES lesson(id) ON DELETE SET NULL;
-ALTER TABLE lesson
-ADD FOREIGN KEY (course_id) REFERENCES course(id);
