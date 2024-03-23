@@ -1,0 +1,21 @@
+version: "3.8"
+volumes:
+  m164_vol:
+  
+services:
+    adminer:
+      image: adminer:latest
+      ports:
+        - "8081:8080"
+
+    maria:
+      image: mariadb:latest
+      environment:
+        MYSQL_ROOT_PASSWORD: toor
+        MYSQL_DATABASE: m164
+        MYSQL_USER: m164
+        MYSQL_PASSWORD: toor
+      ports:
+        - "3306:3306"
+      volumes:
+        - m164_vol:/var/lib/mysql
