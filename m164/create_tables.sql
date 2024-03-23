@@ -34,8 +34,8 @@ CREATE TABLE student (
   stud_mail VARCHAR(50) UNIQUE NOT NULL,
   contact_id INT NOT NULL,
   class_id INT NOT NULL,
-  FOREIGN KEY (contact_id) REFERENCES contact(id),
-  FOREIGN KEY (class_id) REFERENCES class(id)
+  FOREIGN KEY (contact_id) REFERENCES contact(id) ON DELETE RESTRICT,
+  FOREIGN KEY (class_id) REFERENCES class(id) ON DELETE RESTRICT,
 );
 
 CREATE TABLE teacher (
@@ -44,8 +44,8 @@ CREATE TABLE teacher (
   last_name VARCHAR(50) NOT NULL,
   contact_id INT NOT NULL,
   class_id INT NOT NULL,
-  FOREIGN KEY (contact_id) REFERENCES contact(id),
-  FOREIGN KEY (class_id) REFERENCES class(id)
+  FOREIGN KEY (contact_id) REFERENCES contact(id) ON DELETE RESTRICT,
+  FOREIGN KEY (class_id) REFERENCES class(id) ON DELETE RESTRICT
 );
 
 CREATE TABLE absence (
@@ -55,30 +55,30 @@ CREATE TABLE absence (
   confirmed TINYINT(1) NOT NULL DEFAULT 0,
   lesson_id INT NOT NULL,
   student_id VARCHAR(20),
-  FOREIGN KEY (student_id) REFERENCES student(id)
+  FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE
 );
 
 CREATE TABLE lesson (
   id INT PRIMARY KEY AUTO_INCREMENT,
   start_time TIME NOT NULL,
   end_time TIME NOT NULL,
-  teacher_id VARCHAR(20) NOT NULL,
+  teacher_id VARCHAR(20),
   course_id INT NOT NULL,
-  room_id INT NOT NULL,
+  room_id INT,
   class_id INT NOT NULL,
-  FOREIGN KEY (teacher_id) REFERENCES teacher(id),
-  FOREIGN KEY (room_id) REFERENCES room(id),
-  FOREIGN KEY (class_id) REFERENCES class(id),
+  FOREIGN KEY (teacher_id) REFERENCES teacher(id) ON DELETE SET NULL,
+  FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE SET NULL,
+  FOREIGN KEY (class_id) REFERENCES class(id) ON DELETE CASCADE,
   CHECK (start_time < end_time)
 );
 
 CREATE TABLE course (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  author_id VARCHAR(20) NOT NULL,
+  author_id VARCHAR(20),
   subject VARCHAR(50) NOT NULL,
   number INT NOT NULL,
   hours INT NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES teacher(id)
+  FOREIGN KEY (author_id) REFERENCES teacher(id) ON DELETE SET NULL
 );
 
 CREATE TABLE schedule(
@@ -88,7 +88,7 @@ CREATE TABLE schedule(
   date DATE NOT NULL,
   confirmed TINYINT(1) NOT NULL DEFAULT 0,
   room_id INT NOT NULL,
-  FOREIGN KEY (room_id) REFERENCES room(id)
+  FOREIGN KEY (room_id) REFERENCES room(id) ON DELETE CASCADE
 );
 
 CREATE TABLE lesson_schedule (
