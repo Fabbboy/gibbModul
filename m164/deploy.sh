@@ -4,7 +4,7 @@ if ! [ -x "$(command -v docker)" ]; then
 fi
 
 echo "Starting the docker containers..."
-docker-compose up -d || { echo 'Error: docker-compose up failed.' >&2; exit 1; }
+docker-compose up -d || { echo 'Error: docker-compose up failed.\nMaybe try elevated privileges' >&2; exit 1; }
 
 echo "As long as docker-compose.yml wasn't changed you can use the following creds:"
 echo " - Server: maria (or localhost:3306)"
