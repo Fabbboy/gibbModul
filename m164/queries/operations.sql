@@ -1,4 +1,4 @@
--- get all teachers that tutroe something. get their first and lastname, the subject and the tutoring lesson
+-- Retrieves a list of teachers involved in tutoring along with the subjects they teach and the timing of the tutoring sessions.
 SELECT
   teacher.first_name,
   teacher.last_name,
@@ -11,7 +11,7 @@ FROM
   JOIN lesson ON teacher.id = lesson.teacher_id
   JOIN tutoring ON course.id = tutoring.course_id;
 
--- get all teachers that dont tutor anything
+-- Selects teachers who are not assigned to any tutoring sessions.
 SELECT
   teacher.first_name,
   teacher.last_name
@@ -23,7 +23,7 @@ FROM
 WHERE
   tutoring.id IS NULL;
 
--- get all students that have an absence in a lesson that is not confirmed
+-- Finds all students with unconfirmed absences, including details about the absence.
 SELECT
   student.first_name,
   student.last_name,
@@ -36,7 +36,7 @@ FROM
 WHERE
   absence.confirmed = 0;
 
--- delete all tutorings where no student is assigned
+-- Deletes tutoring sessions that do not have any students enrolled.
 DELETE FROM tutoring
 WHERE
   tutoring.id NOT IN (
@@ -46,6 +46,7 @@ WHERE
       students_tutoring
   );
 
+-- Lists rooms ordered by capacity from largest to smallest.
 SELECT
   building,
   number,
@@ -55,6 +56,7 @@ FROM
 ORDER BY
   capacity DESC;
 
+-- Counts the number of lessons and calculates the total hours of lessons in each room.
 SELECT
   room_id,
   COUNT(*) AS number_of_lessons,
@@ -64,6 +66,7 @@ FROM
 GROUP BY
   room_id;
 
+-- Associates courses with their respective class types.
 SELECT
   course.subject,
   class.type
@@ -72,6 +75,7 @@ FROM
   JOIN teacher ON course.author_id = teacher.id
   JOIN class ON teacher.class_id = class.id;
 
+-- Gathers contact information for all students.
 SELECT
   student.first_name,
   student.last_name,
@@ -84,6 +88,7 @@ FROM
 WHERE
   contact.role = 'student';
 
+-- Counts the number of students in each class type.
 SELECT
   class.type,
   COUNT(student.id) AS total_students
@@ -93,6 +98,7 @@ FROM
 GROUP BY
   class.type;
 
+-- Selects details of confirmed schedules, including the location and notes about the schedule.
 SELECT
   room.building,
   room.number,
@@ -105,6 +111,7 @@ FROM
 WHERE
   schedule.confirmed = 1;
 
+-- Calculates the total number of absences per class type.
 SELECT
   class.type,
   COUNT(absence.id) AS absences_count
